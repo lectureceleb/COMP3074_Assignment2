@@ -1,3 +1,4 @@
+import React, { useState} from "react";
 import { StyleSheet, TextInput } from 'react-native';
 
 import EditScreenInfo from '@/components/EditScreenInfo';
@@ -17,6 +18,7 @@ export default function TabOneScreen() {
             placeholder="CAD"
             placeholderTextColor="white"
         />
+
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <Text>Target currency:</Text>
         <TextInput
@@ -24,8 +26,17 @@ export default function TabOneScreen() {
             placeholder="USD"
             placeholderTextColor="white"
         />
+
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <Text>Amount:</Text>
+        <TextInput
+            style={styles.currency_input}
+            placeholder="100"
+            placeholderTextColor="white"
+        />
+
+        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <Text>Conversion:</Text>
         <TextInput
             style={styles.currency_input}
             placeholder="100"
