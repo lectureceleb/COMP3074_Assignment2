@@ -29,7 +29,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Currency Converter',
+          title: 'Home',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
@@ -51,9 +51,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="About"
         options={{
-          title: 'Tab Two',
+          title: 'About',
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-            tabBarLabel: "About.tsx",
+            tabBarLabel: "About",
         }}
       />
     </Tabs>
