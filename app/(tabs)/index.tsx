@@ -13,8 +13,19 @@ export default function TabOneScreen() {
   const [conversion, setConversion ] = useState("");
   const [message, setMessage ] = useState("")
 
-  const handleButtonPress = () => {
-    setMessage(`${userInput} ${currencyOut}`);
+  const isInputValid = () => {
+    const ISO_TEST = /^[A-Z]{3}$/;
+
+    if (!ISO_TEST.test(currencyIn) || !ISO_TEST.test(currencyOut)) {
+      setMessage("You must enter a valid 3-letter, all uppercase ISO code to proceed.")
+      // return false;
+    } else if (!(userInput > 0)) {
+      setMessage("You must enter a positive number value to proceed.");
+      // return false;
+    } else {
+      setMessage(`You can covert ${currencyIn} to ${currencyOut}!`);
+      return true;
+    }
   }
 
   return (
@@ -53,12 +64,13 @@ export default function TabOneScreen() {
         />
         <Button
             title="Convert"
-            onPress={handleButtonPress}
+            onPress={isInputValid}
         />
+      </View>
 
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <Text>Conversion: {message}</Text>
-      </View>
+        <Text>Conversion:</Text>
+        <Text>{message}</Text>
     </View>
   );
 }
