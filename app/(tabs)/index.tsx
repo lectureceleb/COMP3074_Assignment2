@@ -10,7 +10,7 @@ export default function TabOneScreen() {
   const [userInput, setUserInput ] = useState("");
   const [currencyIn, setCurrencyIn] = useState("CAD");
   const [currencyOut, setCurrencyOut] = useState("USD");
-  const [conversion, setConversion ] = useState("");
+  const [fxRate, setFxRate ] = useState(0);
   const [message, setMessage ] = useState("")
 
   const isInputValid = () => {
@@ -18,14 +18,60 @@ export default function TabOneScreen() {
 
     if (!ISO_TEST.test(currencyIn) || !ISO_TEST.test(currencyOut)) {
       setMessage("You must enter a valid 3-letter, all uppercase ISO code to proceed.")
-      // return false;
+      return false;
     } else if (!(userInput > 0)) {
       setMessage("You must enter a positive number value to proceed.");
-      // return false;
+      return false;
     } else {
-      setMessage(`You can covert ${currencyIn} to ${currencyOut}!`);
       return true;
     }
+  }
+
+  // const createMessage = () => {
+  //   let value = 0;
+  //   if (currencyIn === currencyOut) {
+  //     value = Number(userInput);
+  //   } else {
+  //     value = userInput * fxRate;
+  //   }
+  //   setMessage(`${userInput} ${currencyIn} converts to ${value} ${currencyOut}.`);
+  // }
+  //
+  // useEffect(() => {
+  //   createMessage();
+  // }, [apiData]);
+
+  const callApi = async () => {
+
+    if (!isInputValid()) {
+      return   // TODO: Fix this to return something that won't cause errors later!!!
+    }
+
+    setLoading(true);
+
+    try {
+      const API_KEY = "fca_live_Hx8m0HOhRpshDd9ffUmDDW0TJdt55jracSBHmWST";
+      const API_ENDPOINT =
+          `https://api.freecurrencyapi.com/v1/latest?apikey=${API_KEY}&base_currency=${currencyIn}&currencies=${currencyOut}`;
+
+      const response = await fetch(API_ENDPOINT);
+
+      if (!response.ok){
+        throw new Error(`Error code: ${response.status}`);   // TODO: Change this value!
+      }
+
+      const data = await response.json();
+      setApiData(data);
+
+    } catch (error) {
+      console.log(`Error: ${error}`);   // TODO: Change this value!
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (error) {
+    return <Text>There was an error retrieving weather data.  Please try again.</Text>
   }
 
   return (
@@ -63,14 +109,24 @@ export default function TabOneScreen() {
 
         />
         <Button
-            title="Convert"
-            onPress={isInputValid}
+            title={loading ? "Converting..." : "Convert"}
+            onPress={callApi}
+            disabled={loading}
         />
       </View>
 
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <Text>Conversion:</Text>
-        <Text>{message}</Text>
+      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <Text>Conversion:</Text>
+      {loading && <ActivityIndicator size="large" color="#000000" />}
+
+      {apiData && (
+          <Text>
+            {userInput} {currencyIn} converts to {userInput * apiData.data[currencyOut]} {currencyOut}
+            {"\n"}
+            Exchange rate: {apiData.data[currencyOut]}
+          </Text>
+      )}
+
     </View>
   );
 }
