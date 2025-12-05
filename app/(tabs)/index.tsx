@@ -44,8 +44,6 @@ export default function TabOneScreen() {
         />
 
       </View>
-
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
     </View>
   );
 }
