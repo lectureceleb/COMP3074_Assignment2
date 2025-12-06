@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {StyleSheet, useColorScheme, ActivityIndicator, Button, TextInput} from 'react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -16,15 +16,17 @@ export default function TabOneScreen() {
   const [message, setMessage ] = useState("");
 
   const colorScheme = useColorScheme();
-  const currentColors = Colors.light;
-// const currentColors = Colors[colorScheme] || Colors.light;
+const currentColors = Colors[colorScheme] || Colors.light;
 
+  // Input validation
   const isInputValid = () => {
     const ISO_TEST = /^[A-Z]{3}$/;
 
+    // Check for 3 capital letters
     if (!ISO_TEST.test(currencyIn) || !ISO_TEST.test(currencyOut)) {
       setMessage("You must enter a valid 3-letter, all uppercase ISO code to proceed.")
       return false;
+    // Check for positive number
     } else if (!(userInput > 0)) {
       setMessage("You must enter a positive number value to proceed.");
       return false;
@@ -33,24 +35,10 @@ export default function TabOneScreen() {
     }
   }
 
-  // const createMessage = () => {
-  //   let value = 0;
-  //   if (currencyIn === currencyOut) {
-  //     value = Number(userInput);
-  //   } else {
-  //     value = userInput * fxRate;
-  //   }
-  //   setMessage(`${userInput} ${currencyIn} converts to ${value} ${currencyOut}.`);
-  // }
-  //
-  // useEffect(() => {
-  //   createMessage();
-  // }, [apiData]);
-
   const callApi = async () => {
 
     if (!isInputValid()) {
-      return   // TODO: Fix this to return something that won't cause errors later!!!
+      return
     }
 
     setLoading(true);
@@ -62,22 +50,23 @@ export default function TabOneScreen() {
 
       const response = await fetch(API_ENDPOINT);
 
+      // Show status code if API call leads to error
       if (!response.ok){
-        throw new Error(`Error code: ${response.status}`);   // TODO: Change this value!
+        throw new Error(`Error code: ${response.status}`);
       }
 
       const data = await response.json();
       setApiData(data);
 
     } catch (error) {
-      console.log(`Error: ${error}`);   // TODO: Change this value!
+      console.log(`Error: ${error}`);
     } finally {
       setLoading(false);
     }
   }
 
   if (error) {
-    return <Text>There was an error retrieving weather data.  Please try again.</Text>
+    return <Text style={styles.currency_output}>There was an error retrieving weather data.  Please try again.</Text>
   }
 
   return (
@@ -139,8 +128,11 @@ export default function TabOneScreen() {
 
       <View style={styles.conversion_view}>
         <Text style={styles.conversion_title}>Conversion:</Text>
+
+        {/* Show loader while API call is in process */}
         {loading && <ActivityIndicator size="large" color="#000000" />}
 
+        {/* Show blank text until button is pressed and data is available */}
         {apiData ? (
             <Text style={styles.currency_output}>
               {userInput} {currencyIn} converts to {userInput * apiData.data[currencyOut]} {currencyOut}
@@ -159,8 +151,7 @@ export default function TabOneScreen() {
 }
 
 const colorScheme = useColorScheme();
-const currentColors = Colors.light;
-// const currentColors = Colors[colorScheme] || Colors.light;
+const currentColors = Colors[colorScheme] || Colors.light;
 const styles = StyleSheet.create({
 
   container: {

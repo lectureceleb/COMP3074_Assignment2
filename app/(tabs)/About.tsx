@@ -1,4 +1,3 @@
-// import React from "react";
 import { StyleSheet } from 'react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -14,7 +13,6 @@ export default function TabTwoScreen() {
     </View>
   );
 }
-
 
 const colorScheme = useColorScheme();
 const currentColors = Colors[colorScheme] || Colors.light;
