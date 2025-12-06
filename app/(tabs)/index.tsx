@@ -14,6 +14,7 @@ export default function TabOneScreen() {
   const [currencyIn, setCurrencyIn] = useState("CAD");
   const [currencyOut, setCurrencyOut] = useState("USD");
   const [message, setMessage ] = useState("");
+  const [message2, setMessage2 ] = useState("");
 
   const colorScheme = useColorScheme();
   const currentColors = Colors[colorScheme] || Colors.light;
@@ -42,6 +43,8 @@ export default function TabOneScreen() {
 
   const callApi = async () => {
     setFxRate("");
+    setMessage2("");
+
     if (!isInputValid()) {
       return
     }
@@ -74,6 +77,7 @@ export default function TabOneScreen() {
     if (apiData) {
       const conversion = currencyConversion();
       setMessage(conversion);
+      setMessage2(`Exchange rate: ${fxRate}`);
     }
   }, [apiData]);
 
@@ -147,7 +151,7 @@ export default function TabOneScreen() {
             <Text style={styles.currency_output}>
               {message}
               {"\n"}
-              Exchange rate: {fxRate}
+              {message2}
             </Text>
         ) : (
             <Text style={styles.currency_output}>{"\n"}</Text>
