@@ -81,51 +81,69 @@ export default function TabOneScreen() {
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
 
       <View style={styles.currency_container}>
-        <Text>Base currency:</Text>
-        <TextInput
-            style={styles.currency_input}
-            placeholder="CAD"
-            placeholderTextColor="white"
-            onChangeText={setCurrencyIn}
-            value={currencyIn}
-        />
+
+        <View style={styles.input_row}>
+          <Text style={styles.label}>Base currency:</Text>
+          <TextInput
+              style={styles.currency_input}
+              placeholder="CAD"
+              placeholderTextColor="white"
+              onChangeText={setCurrencyIn}
+              value={currencyIn}
+          />
+        </View>
 
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <Text>Target currency:</Text>
-        <TextInput
-            style={styles.currency_input}
-            placeholder="USD"
-            placeholderTextColor="white"
-            onChangeText={setCurrencyOut}
-            value={currencyOut}
-        />
+
+        <View style={styles.input_row}>
+          <Text>Target currency:</Text>
+          <TextInput
+              style={styles.currency_input}
+              placeholder="USD"
+              placeholderTextColor="white"
+              onChangeText={setCurrencyOut}
+              value={currencyOut}
+          />
+        </View>
 
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-        <Text>Amount:</Text>
-        <TextInput
-            style={styles.currency_input}
-            onChangeText={setUserInput}
-            value={userInput}
 
-        />
-        <Button
-            title={loading ? "Converting..." : "Convert"}
-            onPress={callApi}
-            disabled={loading}
-        />
+        <View style={styles.input_row}>
+          <Text>Amount:</Text>
+          <TextInput
+              style={styles.currency_input}
+              onChangeText={setUserInput}
+              value={userInput}
+
+          />
+        </View>
+
+        <View>
+          <Button
+              title={loading ? "Converting..." : "Convert"}
+              onPress={callApi}
+              disabled={loading}
+          />
+        </View>
+
       </View>
 
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <Text>Conversion:</Text>
-      {loading && <ActivityIndicator size="large" color="#000000" />}
 
-      {apiData && (
-          <Text>
-            {userInput} {currencyIn} converts to {userInput * apiData.data[currencyOut]} {currencyOut}
-            {"\n"}
-            Exchange rate: {apiData.data[currencyOut]}
-          </Text>
-      )}
+      <View style={styles.conversion_view}>
+        <Text>Conversion:</Text>
+        {loading && <ActivityIndicator size="large" color="#000000" />}
+
+        {apiData ? (
+            <Text>
+              {userInput} {currencyIn} converts to {userInput * apiData.data[currencyOut]} {currencyOut}
+              {"\n"}
+              Exchange rate: {apiData.data[currencyOut]}
+            </Text>
+        ) : (
+            <Text>{"\n"}</Text>
+        )}
+      </View>
 
     </View>
   );
@@ -133,7 +151,7 @@ export default function TabOneScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 2,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -146,15 +164,29 @@ const styles = StyleSheet.create({
     height: 1,
     width: '80%',
   },
+
   currency_container: {
     flex: 3,
     alignItems: 'flex-start',
+  },
+  input_row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: "80%",
   },
   currency_input: {
     height: 50,
     borderColor: 'black',
     borderWidth: 1,
+    marginLeft: 25,
     color: 'white',
+    width: "25%",
+  },
+
+  conversion_view: {
+    flexDirection: 'column',
+    padding: 0,
   },
   currency_output: {
     height: 70,
