@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {StyleSheet, useColorScheme, ActivityIndicator, Button, TextInput} from 'react-native';
 
 import { Text, View } from '@/components/Themed';
@@ -7,16 +7,16 @@ import { Colors } from '@/themes/colours';
 
 export default function TabOneScreen() {
   const [apiData, setApiData] = useState(null);
+  const [fxRate, setFxRate] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError ] = useState(null);
   const [userInput, setUserInput ] = useState("");
   const [currencyIn, setCurrencyIn] = useState("CAD");
   const [currencyOut, setCurrencyOut] = useState("USD");
-  const [fxRate, setFxRate ] = useState(0);
   const [message, setMessage ] = useState("");
 
   const colorScheme = useColorScheme();
-const currentColors = Colors[colorScheme] || Colors.light;
+  const currentColors = Colors[colorScheme] || Colors.light;
 
   // Input validation
   const isInputValid = () => {
@@ -35,8 +35,13 @@ const currentColors = Colors[colorScheme] || Colors.light;
     }
   }
 
-  const callApi = async () => {
+  const currencyConversion = () => {
+    setFxRate(apiData.data[currencyOut]);
+    return `${userInput} ${currencyIn} converts to ${userInput * apiData.data[currencyOut]} ${currencyOut}`;
+  }
 
+  const callApi = async () => {
+    setFxRate("");
     if (!isInputValid()) {
       return
     }
@@ -64,6 +69,13 @@ const currentColors = Colors[colorScheme] || Colors.light;
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    if (apiData) {
+      const conversion = currencyConversion();
+      setMessage(conversion);
+    }
+  }, [apiData]);
 
   if (error) {
     return <Text style={styles.currency_output}>There was an error retrieving weather data.  Please try again.</Text>
@@ -129,15 +141,13 @@ const currentColors = Colors[colorScheme] || Colors.light;
       <View style={styles.conversion_view}>
         <Text style={styles.conversion_title}>Conversion:</Text>
 
-        {/* Show loader while API call is in process */}
         {loading && <ActivityIndicator size="large" color="#000000" />}
 
-        {/* Show blank text until button is pressed and data is available */}
         {apiData ? (
             <Text style={styles.currency_output}>
-              {userInput} {currencyIn} converts to {userInput * apiData.data[currencyOut]} {currencyOut}
+              {message}
               {"\n"}
-              Exchange rate: {apiData.data[currencyOut]}
+              Exchange rate: {fxRate}
             </Text>
         ) : (
             <Text style={styles.currency_output}>{"\n"}</Text>
