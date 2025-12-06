@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {ActivityIndicator, Button, StyleSheet, TextInput} from 'react-native';
+import {StyleSheet, useColorScheme, ActivityIndicator, Button, TextInput} from 'react-native';
 
 import { Text, View } from '@/components/Themed';
+
+import { Colors } from '@/themes/colours';
 
 export default function TabOneScreen() {
   const [apiData, setApiData] = useState(null);
@@ -11,7 +13,11 @@ export default function TabOneScreen() {
   const [currencyIn, setCurrencyIn] = useState("CAD");
   const [currencyOut, setCurrencyOut] = useState("USD");
   const [fxRate, setFxRate ] = useState(0);
-  const [message, setMessage ] = useState("")
+  const [message, setMessage ] = useState("");
+
+  const colorScheme = useColorScheme();
+  const currentColors = Colors.light;
+// const currentColors = Colors[colorScheme] || Colors.light;
 
   const isInputValid = () => {
     const ISO_TEST = /^[A-Z]{3}$/;
@@ -78,7 +84,7 @@ export default function TabOneScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Currency Converter</Text>
 
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <View style={styles.separator} />
 
       <View style={styles.currency_container}>
 
@@ -87,29 +93,29 @@ export default function TabOneScreen() {
           <TextInput
               style={styles.currency_input}
               placeholder="CAD"
-              placeholderTextColor="white"
+              placeholderTextColor={currentColors.border}
               onChangeText={setCurrencyIn}
               value={currencyIn}
           />
         </View>
 
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <View style={styles.separator} />
 
         <View style={styles.input_row}>
-          <Text>Target currency:</Text>
+          <Text style={styles.label}>Target currency:</Text>
           <TextInput
               style={styles.currency_input}
               placeholder="USD"
-              placeholderTextColor="white"
+              placeholderTextColor={currentColors.border}
               onChangeText={setCurrencyOut}
               value={currencyOut}
           />
         </View>
 
-        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <View style={styles.separator} />
 
         <View style={styles.input_row}>
-          <Text>Amount:</Text>
+          <Text style={styles.label}>Amount:</Text>
           <TextInput
               style={styles.currency_input}
               onChangeText={setUserInput}
@@ -120,6 +126,7 @@ export default function TabOneScreen() {
 
         <View>
           <Button
+              style={styles.button}
               title={loading ? "Converting..." : "Convert"}
               onPress={callApi}
               disabled={loading}
@@ -128,70 +135,97 @@ export default function TabOneScreen() {
 
       </View>
 
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <View style={styles.separator} />
 
       <View style={styles.conversion_view}>
-        <Text>Conversion:</Text>
+        <Text style={styles.conversion_title}>Conversion:</Text>
         {loading && <ActivityIndicator size="large" color="#000000" />}
 
         {apiData ? (
-            <Text>
+            <Text style={styles.currency_output}>
               {userInput} {currencyIn} converts to {userInput * apiData.data[currencyOut]} {currencyOut}
               {"\n"}
               Exchange rate: {apiData.data[currencyOut]}
             </Text>
         ) : (
-            <Text>{"\n"}</Text>
+            <Text style={styles.currency_output}>{"\n"}</Text>
         )}
       </View>
 
     </View>
   );
+
+
 }
 
+const colorScheme = useColorScheme();
+const currentColors = Colors.light;
+// const currentColors = Colors[colorScheme] || Colors.light;
 const styles = StyleSheet.create({
+
   container: {
     flex: 2,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: currentColors.background,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: currentColors.primary_text,
   },
   separator: {
     marginVertical: 30,
     height: 1,
     width: '80%',
+    backgroundColor: currentColors.separator,
   },
 
   currency_container: {
     flex: 3,
     alignItems: 'flex-start',
+    backgroundColor: currentColors.background,
   },
   input_row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: "80%",
+    backgroundColor: currentColors.background,
+  },
+  label: {
+    color: currentColors.primary_text,
+    fontWeight: 'bold',
+    backgroundColor: currentColors.background,
   },
   currency_input: {
     height: 50,
     borderColor: 'black',
     borderWidth: 1,
     marginLeft: 25,
-    color: 'white',
+    textAlign: 'center',
+    color: currentColors.border,
     width: "25%",
+  },
+  button: {
+    color: currentColors.primary_text,
+    backgroundColor: currentColors.accent_text,
   },
 
   conversion_view: {
     flexDirection: 'column',
     padding: 0,
+    textAlign: 'center',
+  },
+  conversion_title: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    backgroundColor: currentColors.background,
+    color: currentColors.primary_text,
   },
   currency_output: {
     height: 70,
-    borderColor: 'black',
-    borderWidth: 2,
-    color: 'white',
+    color: currentColors.accent_text,
+    backgroundColor: currentColors.background,
   },
 });
